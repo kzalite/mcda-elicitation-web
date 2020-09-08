@@ -216,6 +216,12 @@ export default function getRequiredRights(
       'DELETE',
       'write',
       workspaceOwnerRightsNeeded
+    ),
+    makeRights(
+      '/workspaces/:workspaceId/problems/:subproblemId/scenarios/:scenarioId/cbmState',
+      'POST',
+      'write',
+      workspaceOwnerRightsNeeded
     )
   ];
 }

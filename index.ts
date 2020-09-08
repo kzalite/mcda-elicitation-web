@@ -14,7 +14,6 @@ import {
 } from 'http-status-codes';
 import _ from 'lodash';
 import 'module-alias/register';
-import getRequiredRights from './node-backend/getRequiredRights';
 // @ts-ignore
 import RightsManagement from 'rights-management';
 // @ts-ignore
@@ -23,6 +22,7 @@ import Signin from 'signin';
 import StartupDiagnostics from 'startup-diagnostics';
 import DB from './node-backend/db';
 import {buildDBConfig, buildDBUrl} from './node-backend/dbUtil';
+import getRequiredRights from './node-backend/getRequiredRights';
 import InProgressWorkspaceRepository from './node-backend/inProgressRepository';
 import InProgressRouter from './node-backend/inProgressRouter';
 import logger from './node-backend/logger';

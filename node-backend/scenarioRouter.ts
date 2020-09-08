@@ -1,6 +1,7 @@
 import {Router} from 'express';
-import ScenarioHandler from './scenarioHandler';
+import getChoiceBasedMatchingState from './choiceBasedMatchingHandler';
 import IDB from './interface/IDB';
+import ScenarioHandler from './scenarioHandler';
 
 export default function ScenarioRouter(db: IDB) {
   const {
@@ -17,5 +18,9 @@ export default function ScenarioRouter(db: IDB) {
     .get('/:workspaceId/problems/:subproblemId/scenarios/:id', get)
     .post('/:workspaceId/problems/:subproblemId/scenarios', create)
     .post('/:workspaceId/problems/:subproblemId/scenarios/:id', update)
-    .delete('/:workspaceId/problems/:subproblemId/scenarios/:id', del);
+    .delete('/:workspaceId/problems/:subproblemId/scenarios/:id', del)
+    .post(
+      '/:workspaceId/problems/:subproblemId/scenarios/:id/cbmState',
+      getChoiceBasedMatchingState
+    );
 }
