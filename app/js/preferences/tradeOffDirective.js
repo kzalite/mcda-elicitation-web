@@ -8,7 +8,7 @@ define([], function () {
         criteria: '=',
         criteriaHavePvf: '=',
         editMode: '=',
-        importance: '=',
+        importances: '=',
         isAccessible: '=',
         isSafe: '=',
         problem: '=',
@@ -22,25 +22,32 @@ define([], function () {
 
         scope.pvf = PartialValueFunctionService;
 
-        scope.$watch('problem', (newProblem) => {
-          if (newProblem) {
-            scope.elicitationMethod = getElicitationMethod(scope.problem);
-          }
-        }, true);
+        scope.$watch(
+          'problem',
+          (newProblem) => {
+            if (newProblem) {
+              scope.elicitationMethod = getElicitationMethod(scope.problem);
+            }
+          },
+          true
+        );
 
         function getElicitationMethod(problem) {
           const preferences = problem.preferences;
-          if (!preferences || !preferences.length) {
+          if (_.isEmpty(preferences)) {
             return 'None';
           }
-          if (preferences[0].type === 'ordinal') {
-            return 'Ranking';
-          }
-          if (preferences[0].type === 'exact swing') {
-            return 'Matching or Precise Swing Weighting';
-          }
-          if (preferences[0].type === 'ratio bound') {
-            return 'Imprecise Swing Weighting';
+          switch (preferences[0].type) {
+            case 'ordinal':
+              return 'Ranking';
+            case 'exact swing':
+              return 'Matching or Precise Swing Weighting';
+            case 'ratio bound':
+              return 'Imprecise Swing Weighting';
+            case 'upper ratio':
+              return 'Choice-based Matching';
+            default:
+              return 'Unknown method';
           }
         }
 

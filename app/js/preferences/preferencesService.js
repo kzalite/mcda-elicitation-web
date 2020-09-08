@@ -1,35 +1,46 @@
 'use strict';
-define(['lodash', 'angular'], function(_, angular) {
+define(['lodash', 'angular'], function (_, angular) {
+  var dependencies = ['PataviResultsService'];
+  var PreferencesService = function (PataviResultsService) {
+    function buildImportances(criteria, preferences, weights) {
+      return _.reduce(
+        criteria,
+        function (accum, criterion) {
+          if (_.isEmpty(preferences)) {
+            accum[criterion.id] = '?';
+          } else if (preferences[0].type === 'ordinal') {
+            accum[criterion.id] = determineRank(preferences, criterion.id);
+          } else if (preferences[0].type === 'upper ratio') {
+            accum[criterion.id] = calculateChoiceBasedImportance(
+              criterion.id,
+              weights.mean
+            );
+          } else {
+            accum[criterion.id] = buildCriterionImportance(
+              preferences,
+              criterion.id
+            );
+          }
+          return accum;
+        },
+        {}
+      );
+    }
 
-  var dependencies = [
-    'PataviResultsService'
-  ];
-  var PreferencesService = function(
-    PataviResultsService
-  ) {
-
-    function buildImportance(criteria, preferences) {
-      return _.reduce(criteria, function(accum, criterion) {
-        if (_.isEmpty(preferences)) {
-          accum[criterion.id] = '?';
-        } else if (preferences[0].type === 'ordinal') {
-          accum[criterion.id] = determineRank(preferences, criterion.id);
-        } else {
-          accum[criterion.id] = buildCriterionImportance(preferences, criterion.id);
-        }
-        return accum;
-      }, {});
+    function calculateChoiceBasedImportance(criterionId, meanWeights) {
+      const maxWeight = _(meanWeights).values().max();
+      return Math.round((meanWeights[criterionId] / maxWeight) * 100) + '%';
     }
 
     function determineRank(preferences, criterionId) {
-      var preference = _.findIndex(preferences, function(pref) {
+      var preference = _.findIndex(preferences, function (pref) {
         return pref.criteria[1] === criterionId;
       });
       return preference !== undefined ? preference + 2 : 1;
     }
 
     function buildCriterionImportance(preferences, criterionId) {
-      var preference = _.find(preferences, function(pref) {
+      var preference = _.find(preferences, function (pref) {
         return pref.criteria[1] === criterionId;
       });
       if (!preference) {
@@ -42,8 +53,12 @@ define(['lodash', 'angular'], function(_, angular) {
     }
 
     function getImpreciseValue(preference) {
-      return Math.round((1 / preference.bounds[1]) * 100) + '-' +
-        Math.round((1 / preference.bounds[0]) * 100) + '%';
+      return (
+        Math.round((1 / preference.bounds[1]) * 100) +
+        '-' +
+        Math.round((1 / preference.bounds[0]) * 100) +
+        '%'
+      );
     }
 
     function getExactValue(preference) {
@@ -57,10 +72,9 @@ define(['lodash', 'angular'], function(_, angular) {
     }
 
     return {
-      buildImportance: buildImportance,
+      buildImportances: buildImportances,
       getWeights: getWeights
     };
   };
   return dependencies.concat(PreferencesService);
-
 });

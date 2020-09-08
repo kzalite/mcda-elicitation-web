@@ -1,6 +1,7 @@
 'use strict';
 define(['lodash', 'jquery', 'angular'], function (_, $, angular) {
   var dependencies = [
+    '$q',
     '$stateParams',
     'OrderingService',
     'PartialValueFunctionService',
@@ -9,6 +10,7 @@ define(['lodash', 'jquery', 'angular'], function (_, $, angular) {
     'WorkspaceSettingsService'
   ];
   var ScenarioDirective = function (
+    $q,
     $stateParams,
     OrderingService,
     PartialValueFunctionService,
@@ -38,6 +40,7 @@ define(['lodash', 'jquery', 'angular'], function (_, $, angular) {
         function init() {
           scope.criteriaHavePvf = doAllCriteriaHavePvf();
           scope.isOrdinal = isWeightingOrdinal();
+          resetPvfCoordinates();
         }
 
         function isPVFDefined(dataSource) {
@@ -96,22 +99,32 @@ define(['lodash', 'jquery', 'angular'], function (_, $, angular) {
         function resetWeights() {
           scope.scenario.state.prefs = [];
           delete scope.scenario.state.weights;
-          scope.importance = PreferencesService.buildImportance(
-            scope.criteria,
-            scope.scenario.state.prefs
-          );
-          scope.scenario.$save($stateParams, updateView).then(loadWeights);
+          scope.scenario
+            .$save($stateParams, updateView)
+            .then(loadWeights)
+            .then(() => {
+              scope.importances = PreferencesService.buildImportances(
+                scope.criteria,
+                scope.scenario.state.prefs,
+                scope.weights
+              );
+            });
         }
 
         function loadWeights() {
           if (scope.criteriaHavePvf) {
             if (scope.scenario.state.weights) {
               scope.weights = scope.scenario.state.weights;
+              return $q.resolve(scope.weights);
             } else {
-              PreferencesService.getWeights(scope.problem).then(function (result) {
-                scope.weights = result;
-              });
+              return PreferencesService.getWeights(scope.problem).then(
+                function (result) {
+                  scope.weights = result;
+                }
+              );
             }
+          } else {
+            $q.resolve(undefined);
           }
         }
 
@@ -133,7 +146,14 @@ define(['lodash', 'jquery', 'angular'], function (_, $, angular) {
             );
             scope.isSafe = createIsSafe();
             scope.criteriaHavePvf = doAllCriteriaHavePvf();
-            loadWeights();
+            loadWeights().then(() => {
+              var preferences = scope.scenario.state.prefs;
+              scope.importances = PreferencesService.buildImportances(
+                scope.criteria,
+                preferences,
+                scope.weights
+              );
+            });
           });
         }
 
@@ -144,11 +164,6 @@ define(['lodash', 'jquery', 'angular'], function (_, $, angular) {
           ).then(function (orderings) {
             scope.alternatives = orderings.alternatives;
             scope.criteria = orderings.criteria;
-            var preferences = scope.scenario.state.prefs;
-            scope.importance = PreferencesService.buildImportance(
-              scope.criteria,
-              preferences
-            );
           });
         }
       }
