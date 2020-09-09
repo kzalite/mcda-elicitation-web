@@ -5,6 +5,6 @@ export default interface IElicitationCriterion {
   title: string;
   scales: [number, number];
   unitOfMeasurement: string;
-  pvfDirection?: PVFDirection;
+  pvfDirection: PVFDirection;
   description: string;
 }

@@ -2,9 +2,9 @@ import Axios, {AxiosError, AxiosResponse} from 'axios';
 import _ from 'lodash';
 import React, {createContext, useContext, useEffect, useState} from 'react';
 import {ErrorContext} from '../Error/ErrorContext';
+import {buildInitialState} from './ChoiceBasedMatchingElicitation/ChoiceBasedMatchingUtil';
 import IChoiceBasedMatchingContext from './IChoiceBasedMatchingContext';
 import IChoiceBasedMatchingState from './Interface/IChoiceBasedMatchingState';
-import IElicitationCriterion from './Interface/IElicitationCriterion';
 import IUpperRatioConstraint from './Interface/IUpperRatioConstraint';
 import {PreferencesContext} from './PreferencesContext';
 
@@ -27,20 +27,7 @@ export function ChoiceBasedMatchingContextProviderComponent({
   const {setError} = useContext(ErrorContext);
   const {criteria} = useContext(PreferencesContext);
 
-  const initialState: IChoiceBasedMatchingState = {
-    answersAndQuestions: [],
-    criteria: _.map(criteria, (criterion: IElicitationCriterion) => {
-      const sortedScales = _.sortBy(criterion.scales) as [number, number];
-      return {
-        id: criterion.id,
-        pvf: {
-          direction: criterion.pvfDirection,
-          range: sortedScales,
-          type: 'linear'
-        }
-      };
-    })
-  };
+  const initialState: IChoiceBasedMatchingState = buildInitialState(criteria);
   const [currentAnswer, setCurrentAnswer] = useState<'A' | 'B' | ''>('');
   const [cbmState, setCbmState] = useState(initialState);
   const [isStateLoading, setIsStateLoading] = useState(true);

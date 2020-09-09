@@ -4,11 +4,12 @@ import Radio from '@material-ui/core/Radio';
 import RadioGroup from '@material-ui/core/RadioGroup';
 import {ChoiceBasedMatchingContext} from 'app/ts/Elicitation/ChoiceBasedMatchingContext';
 import IChoiceBasedMatchingQuestion from 'app/ts/Elicitation/Interface/IChoiceBasedMatchingQuestion';
+import {ErrorContext} from 'app/ts/Error/ErrorContext';
 import React, {ChangeEvent, useContext, useEffect, useState} from 'react';
 import ChoiceBasedMatchingQuestion from './ChoiceBasedMatchingQuestion/ChoiceBasedMatchingQuestion';
 
 export default function ChoiceBasedMatchingQuestionAndAnswer() {
-  // const {setError} = useContext(ErrorContext);
+  const {setError} = useContext(ErrorContext);
   const {
     currentAnswer,
     setCurrentAnswer,
@@ -31,7 +32,7 @@ export default function ChoiceBasedMatchingQuestionAndAnswer() {
   function handleChange(event: ChangeEvent<HTMLInputElement>) {
     const newValue = event.target.value;
     if (newValue !== 'A' && newValue !== 'B') {
-      // setError('Invalid alternative choice');
+      setError('Invalid alternative choice');
     } else {
       setCurrentAnswer(newValue);
     }
