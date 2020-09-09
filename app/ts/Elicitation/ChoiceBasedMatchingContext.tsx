@@ -1,8 +1,10 @@
 import Axios, {AxiosError, AxiosResponse} from 'axios';
 import _ from 'lodash';
 import React, {createContext, useContext, useEffect, useState} from 'react';
+import {ErrorContext} from '../Error/ErrorContext';
 import IChoiceBasedMatchingContext from './IChoiceBasedMatchingContext';
 import IChoiceBasedMatchingState from './Interface/IChoiceBasedMatchingState';
+import IElicitationCriterion from './Interface/IElicitationCriterion';
 import IUpperRatioConstraint from './Interface/IUpperRatioConstraint';
 import {PreferencesContext} from './PreferencesContext';
 
@@ -19,15 +21,18 @@ export function ChoiceBasedMatchingContextProviderComponent({
   save: (preferences: IUpperRatioConstraint[]) => void;
   cancel: () => void;
 }) {
-  // const {setError} = useContext(ErrorContext); //fixme
+  const {workspaceId, subproblemId, scenarioId} = useContext(
+    PreferencesContext
+  );
+  const {setError} = useContext(ErrorContext);
   const {criteria} = useContext(PreferencesContext);
 
   const initialState: IChoiceBasedMatchingState = {
     answersAndQuestions: [],
-    criteria: _.map(criteria, (criterion) => {
+    criteria: _.map(criteria, (criterion: IElicitationCriterion) => {
       const sortedScales = _.sortBy(criterion.scales) as [number, number];
       return {
-        id: criterion.mcdaId,
+        id: criterion.id,
         pvf: {
           direction: criterion.pvfDirection,
           range: sortedScales,
@@ -52,7 +57,7 @@ export function ChoiceBasedMatchingContextProviderComponent({
       ].answer = currentAnswer;
     }
     Axios.post(
-      `/workspaces/2630/problems/2800/scenarios/3334/cbmState`,
+      `/workspaces/${workspaceId}/problems/${subproblemId}/scenarios/${scenarioId}/choice-based-matching-state`,
       newState
     )
       .then((response: AxiosResponse<IChoiceBasedMatchingState>) => {
@@ -61,7 +66,7 @@ export function ChoiceBasedMatchingContextProviderComponent({
         setIsStateLoading(false);
       })
       .catch((error: AxiosError) => {
-        // setError(error.message + ', ' + error.response!.data);
+        setError(error.message + ', ' + error.response!.data);
       });
   }
 

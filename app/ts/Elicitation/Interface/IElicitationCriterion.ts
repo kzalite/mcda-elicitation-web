@@ -1,7 +1,7 @@
 import {PVFDirection} from './IPVF';
 
 export default interface IElicitationCriterion {
-  mcdaId: string;
+  id: string;
   title: string;
   scales: [number, number];
   unitOfMeasurement: string;

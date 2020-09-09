@@ -20,7 +20,7 @@ export default function ScenarioRouter(db: IDB) {
     .post('/:workspaceId/problems/:subproblemId/scenarios/:id', update)
     .delete('/:workspaceId/problems/:subproblemId/scenarios/:id', del)
     .post(
-      '/:workspaceId/problems/:subproblemId/scenarios/:id/cbmState',
+      '/:workspaceId/problems/:subproblemId/scenarios/:id/choice-based-matching-state',
       getChoiceBasedMatchingState
     );
 }

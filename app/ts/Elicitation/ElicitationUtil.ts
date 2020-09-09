@@ -8,7 +8,7 @@ export function buildElicitationCriteria(
   return _(input)
     .map((criterion: IInputCriterion) => {
       const elicitationCriterion: IElicitationCriterion = {
-        mcdaId: criterion.id,
+        id: criterion.id,
         title: criterion.title,
         scales: [criterion.worst, criterion.best],
         unitOfMeasurement: criterion.dataSources[0].unitOfMeasurement.label,

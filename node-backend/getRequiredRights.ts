@@ -218,7 +218,7 @@ export default function getRequiredRights(
       workspaceOwnerRightsNeeded
     ),
     makeRights(
-      '/workspaces/:workspaceId/problems/:subproblemId/scenarios/:scenarioId/cbmState',
+      '/workspaces/:workspaceId/problems/:subproblemId/scenarios/:scenarioId/choice-based-matching-state',
       'POST',
       'write',
       workspaceOwnerRightsNeeded

@@ -1,6 +1,5 @@
-import React, {createContext, useState} from 'react';
+import React, {createContext} from 'react';
 import {buildElicitationCriteria} from './ElicitationUtil';
-import IElicitationCriterion from './Interface/IElicitationCriterion';
 import IInputCriterion from './Interface/IInputCriterion';
 import IPreferencesContext from './IPreferencesContext';
 
@@ -10,19 +9,24 @@ export const PreferencesContext = createContext<IPreferencesContext>(
 
 export function PreferencesContextProviderComponent({
   inputCriteria,
+  scenarioId,
+  subproblemId,
+  workspaceId,
   children
 }: {
   inputCriteria: IInputCriterion[];
+  scenarioId: string;
+  subproblemId: string;
+  workspaceId: string;
   children: any;
 }) {
-  const [criteria] = useState<Record<string, IElicitationCriterion>>(
-    buildElicitationCriteria(inputCriteria)
-  );
-
   return (
     <PreferencesContext.Provider
       value={{
-        criteria: criteria
+        criteria: buildElicitationCriteria(inputCriteria),
+        scenarioId: scenarioId,
+        subproblemId: subproblemId,
+        workspaceId: workspaceId
       }}
     >
       {children}

@@ -9,7 +9,7 @@ import {ChoiceBasedMatchingContext} from 'app/ts/Elicitation/ChoiceBasedMatching
 import {PreferencesContext} from 'app/ts/Elicitation/PreferencesContext';
 import _ from 'lodash';
 import React, {useContext} from 'react';
-import IChoiceBasedMatchingQuestion from '../../../../Interface/IChoiceBasedMatchingQuestion';
+import IChoiceBasedMatchingQuestion from '../../../Interface/IChoiceBasedMatchingQuestion';
 
 export default function ChoiceBasedMatchingQuestion({
   currentQuestion
@@ -26,7 +26,7 @@ export default function ChoiceBasedMatchingQuestion({
   function getCriterionInfo(
     criterionId: string
   ): {title: string; description: string} {
-    const row = _.find(criteria, ['mcdaId', criterionId]);
+    const row = _.find(criteria, ['id', criterionId]);
     return {
       title: row ? row.title : '',
       description: row && row.description ? row.description : ''

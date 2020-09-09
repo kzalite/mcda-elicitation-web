@@ -116,7 +116,10 @@ define([
       react2angular.react2angular(ChoiceBasedMatchingElicitation.default, [
         'criteria',
         'cancel',
-        'save'
+        'save',
+        'scenarioId',
+        'subproblemId',
+        'workspaceId'
       ])
     );
 });
