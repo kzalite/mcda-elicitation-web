@@ -10,7 +10,9 @@ module.exports = {
   'Precise swing previous button': preciseSwingGoBack,
   'Setting the weights through imprecise swing weighting': impreciseSwing,
   'Imprecise swing previous button': impreciseSwingGoBack,
-  'Interacting with Willingness to trade off plot': interactWithPlot
+  'Interacting with Willingness to trade off plot': interactWithPlot,
+  'Setting the weights through choice-based matching': choiceBasedMatching,
+  'Choice-based matching previous button': choiceBasedMatchingGoBack
 };
 
 const loginService = require('./util/loginService');
@@ -136,7 +138,13 @@ function impreciseSwing(browser) {
     .click('#next-button')
     .click('#save-button');
 
-  matchImportanceColumnContents(browser,'Imprecise Swing Weighting', '100%', '1-100%', '1-100%');
+  matchImportanceColumnContents(
+    browser,
+    'Imprecise Swing Weighting',
+    '100%',
+    '1-100%',
+    '1-100%'
+  );
   resetWeights(browser);
 }
 
@@ -192,4 +200,58 @@ function interactWithPlot(browser) {
       outcomeValue
     )
     .useCss();
+}
+
+function choiceBasedMatching(browser) {
+  browser
+    .click('#choice-based-matching-button')
+    .waitForElementVisible('#choice-based-matching-title-header')
+    .click('#treatment-a')
+    .click('#next-button')
+    .waitForElementVisible('#next-button:disabled')
+    .click('#treatment-a')
+    .waitForElementVisible('#next-button:enabled')
+    .click('#next-button')
+    .waitForElementVisible('#next-button:disabled')
+    .click('#treatment-a')
+    .waitForElementVisible('#next-button:enabled')
+    .click('#next-button')
+    .waitForElementVisible('#next-button:disabled')
+    .click('#treatment-a')
+    .waitForElementVisible('#next-button:enabled')
+    .click('#next-button')
+    .waitForElementVisible('#next-button:disabled')
+    .click('#treatment-a')
+    .waitForElementVisible('#next-button:enabled')
+    .click('#next-button')
+    .waitForElementVisible('#next-button:disabled')
+    .click('#treatment-a')
+    .waitForElementVisible('#next-button:enabled')
+    .click('#next-button')
+    .click('#save-button');
+
+  matchImportanceColumnContents(
+    browser,
+    'Choice-based Matching',
+    '100%',
+    '6%',
+    '45%'
+  );
+  resetWeights(browser);
+}
+
+function choiceBasedMatchingGoBack(browser) {
+  browser
+    .click('#choice-based-matching-button')
+    .waitForElementVisible('#choice-based-matching-title-header')
+    .assert.containsText('#step-counter', 'Step 1')
+    .waitForElementVisible('#next-button:disabled')
+    .click('#treatment-a')
+    .waitForElementVisible('#next-button:enabled')
+    .click('#next-button')
+    .waitForElementVisible('#treatment-a')
+    .assert.containsText('#step-counter', 'Step 2')
+    .click('#previous-button')
+    .waitForElementVisible('#treatment-a')
+    .assert.containsText('#step-counter', 'Step 1');
 }

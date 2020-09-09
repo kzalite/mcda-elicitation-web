@@ -47,11 +47,11 @@ export default function ChoiceBasedMatchingQuestionAndAnswer() {
           value={currentAnswer}
           onChange={handleChange}
         >
-          <label>
+          <label id="treatment-a">
             <Radio value="A" />
             Treatment A
           </label>
-          <label>
+          <label id="treatment-b">
             <Radio value="B" />
             Treatment B
           </label>
